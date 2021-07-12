@@ -58,7 +58,6 @@ defmodule MarsRoverServer do
   def move(:backward, :east, {x, y}), do: {x - 1, y}
   def move(:backward, :west, {x, y}), do: {x + 1, y}
 
-
   def turn(:left, :north), do: :west
   def turn(:right, :north), do: :east
   def turn(:left, :west), do: :south
