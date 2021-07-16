@@ -34,4 +34,5 @@ defmodule MarsPlanetServer do
   def calculate_position(x, y, dim_x, _) when x < 0, do: {dim_x, y}
   def calculate_position(x, y, _, dim_y) when y > dim_y, do: {x, 0}
   def calculate_position(x, y, _, dim_y) when y < 0, do: {x, dim_y}
+  def calculate_position(x, y, _, _), do: {x, y}
 end

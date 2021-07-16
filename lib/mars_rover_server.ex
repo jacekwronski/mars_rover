@@ -18,10 +18,6 @@ defmodule MarsRoverServer do
     GenServer.call(:rover, {:land, :north, 0, 0})
   end
 
-  # def export(clinic_code, period) do
-  #   GenServer.cast(via_tuple(clinic_code, period), :export)
-  # end
-
   def execute(cmd) do
     GenServer.call(:rover, cmd)
   end
@@ -41,12 +37,14 @@ defmodule MarsRoverServer do
 
   def handle_call({:move, :forward}, _from, %{direction: direction, x: x, y: y} = state) do
     {new_x, new_y} = move(:forward, direction, {x, y})
-    {:reply, :ok, %{state | x: new_x, y: new_y}}
+    {:ok, {px, py}} = MarsPlanetServer.execute({:check_edge, {new_x, new_y}})
+    {:reply, :ok, %{state | x: px, y: py}}
   end
 
   def handle_call({:move, :backward}, _from, %{direction: direction, x: x, y: y} = state) do
     {new_x, new_y} = move(:backward, direction, {x, y})
-    {:reply, :ok, %{state | x: new_x, y: new_y}}
+    {:ok, {px, py}} = MarsPlanetServer.execute({:check_edge, {new_x, new_y}})
+    {:reply, :ok, %{state | x: px, y: py}}
   end
 
   def move(:forward, :north, {x, y}), do: {x, y + 1}
@@ -62,8 +60,8 @@ defmodule MarsRoverServer do
   def turn(:right, :north), do: :east
   def turn(:left, :west), do: :south
   def turn(:right, :west), do: :north
-  def turn(:left, :south), do: :west
-  def turn(:right, :south), do: :east
+  def turn(:left, :south), do: :east
+  def turn(:right, :south), do: :west
   def turn(:left, :east), do: :north
   def turn(:right, :east), do: :south
 end
