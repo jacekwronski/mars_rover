@@ -138,4 +138,10 @@ defmodule MarsRoverTest do
     MarsRoverServer.execute({:move, :forward})
     assert MarsRoverServer.execute(:get_state) == {:ok, %{name: "opportunity", x: 1, y: 0, direction: :north}}
   end
+
+  test "rover at 1,0 move forward check for obstacle final position 1,0", %{registry: _registry} do
+    MarsRoverServer.land({:north, 1, 0})
+    MarsRoverServer.execute({:move, :forward})
+    assert MarsRoverServer.execute(:get_state) == {:ok, %{name: "opportunity", x: 1, y: 0, direction: :north}}
+  end
 end

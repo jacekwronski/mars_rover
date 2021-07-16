@@ -47,6 +47,13 @@ defmodule MarsRoverServer do
     {:reply, :ok, %{state | x: px, y: py}}
   end
 
+  # if {:ok, :obstacle} == MarsPlanetServer.execute({:check_edge, {new_x, new_y}}) do
+  #   {:ok, {px, py}} = MarsPlanetServer.execute({:check_edge, {new_x, new_y}})
+  #   {:reply, :ok, %{state | x: px, y: py}}
+  # else
+  #   {:reply, :ok, %{state | x: x, y: y}}
+  # end
+
   def move(:forward, :north, {x, y}), do: {x, y + 1}
   def move(:forward, :south, {x, y}), do: {x, y - 1}
   def move(:forward, :east, {x, y}), do: {x + 1, y}
@@ -55,6 +62,7 @@ defmodule MarsRoverServer do
   def move(:backward, :south, {x, y}), do: {x, y + 1}
   def move(:backward, :east, {x, y}), do: {x - 1, y}
   def move(:backward, :west, {x, y}), do: {x + 1, y}
+  def move(_, _, {x, y}), do: {x, y}
 
   def turn(:left, :north), do: :west
   def turn(:right, :north), do: :east
