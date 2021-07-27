@@ -38,21 +38,24 @@ defmodule MarsRoverServer do
   def handle_call({:move, :forward}, _from, %{direction: direction, x: x, y: y} = state) do
     {new_x, new_y} = move(:forward, direction, {x, y})
     {:ok, {px, py}} = MarsPlanetServer.execute({:check_edge, {new_x, new_y}})
-    {:reply, :ok, %{state | x: px, y: py}}
+
+    if {:ok, :obstacle} == MarsPlanetServer.execute({:check_obstacle, {px, py}}) do
+      {:reply, :ok, %{state | x: x, y: y}}
+    else
+      {:reply, :ok, %{state | x: px, y: py}}
+    end
   end
 
   def handle_call({:move, :backward}, _from, %{direction: direction, x: x, y: y} = state) do
     {new_x, new_y} = move(:backward, direction, {x, y})
     {:ok, {px, py}} = MarsPlanetServer.execute({:check_edge, {new_x, new_y}})
-    {:reply, :ok, %{state | x: px, y: py}}
-  end
 
-  # if {:ok, :obstacle} == MarsPlanetServer.execute({:check_edge, {new_x, new_y}}) do
-  #   {:ok, {px, py}} = MarsPlanetServer.execute({:check_edge, {new_x, new_y}})
-  #   {:reply, :ok, %{state | x: px, y: py}}
-  # else
-  #   {:reply, :ok, %{state | x: x, y: y}}
-  # end
+    if {:ok, :obstacle} == MarsPlanetServer.execute({:check_obstacle, {px, py}}) do
+      {:reply, :ok, %{state | x: x, y: y}}
+    else
+      {:reply, :ok, %{state | x: px, y: py}}
+    end
+  end
 
   def move(:forward, :north, {x, y}), do: {x, y + 1}
   def move(:forward, :south, {x, y}), do: {x, y - 1}

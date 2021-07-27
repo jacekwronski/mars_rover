@@ -4,7 +4,7 @@ defmodule MarsRoverTest do
 
   setup do
     registry = start_supervised!({MarsRoverServer, ["opportunity"]})
-    start_supervised!({MarsPlanetServer, [5, 5, [{1,1}, {3,3}]]})
+    start_supervised!({MarsPlanetServer, [5, 5, [{1,1}, {1,5}, {3,3}]]})
     %{registry: registry}
   end
 
@@ -142,6 +142,12 @@ defmodule MarsRoverTest do
   test "rover at 1,0 move forward check for obstacle final position 1,0", %{registry: _registry} do
     MarsRoverServer.land({:north, 1, 0})
     MarsRoverServer.execute({:move, :forward})
+    assert MarsRoverServer.execute(:get_state) == {:ok, %{name: "opportunity", x: 1, y: 0, direction: :north}}
+  end
+
+  test "rover at 1,0 move backward check for obstacle final position 1,0", %{registry: _registry} do
+    MarsRoverServer.land({:north, 1, 0})
+    MarsRoverServer.execute({:move, :backward})
     assert MarsRoverServer.execute(:get_state) == {:ok, %{name: "opportunity", x: 1, y: 0, direction: :north}}
   end
 end
