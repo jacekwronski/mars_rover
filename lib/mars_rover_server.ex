@@ -22,9 +22,9 @@ defmodule MarsRoverServer do
     GenServer.call(:rover, cmd)
   end
 
-  def handle_call({:turn, turn_direction}, _from, %{direction: direction} = state) do
+  def handle_call({:turn, turn_direction}, _from, %{direction: direction, x: x, y: y} = state) do
     new_direction = turn(turn_direction, direction)
-    {:reply, :ok, %{state | x: 0, y: 0, direction: new_direction}}
+    {:reply, :ok, %{state | x: x, y: y, direction: new_direction}}
   end
 
   def handle_call({:land, direction, x, y}, _from, state) do
@@ -40,7 +40,7 @@ defmodule MarsRoverServer do
     {:ok, {px, py}} = MarsPlanetServer.execute({:check_edge, {new_x, new_y}})
 
     if {:ok, :obstacle} == MarsPlanetServer.execute({:check_obstacle, {px, py}}) do
-      {:reply, :ok, %{state | x: x, y: y}}
+      {:reply, {:obstacle}, %{state | x: x, y: y}}
     else
       {:reply, :ok, %{state | x: px, y: py}}
     end
